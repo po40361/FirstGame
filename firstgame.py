@@ -85,6 +85,7 @@ class enemy(object): #new class for enemies
         self.walkCount = 0
         self.vel = 3
         self.hitbox = (self.x + 15, self.y, 26, 60)
+        self.hitcount = 0
 
 
     def draw(self, win):
@@ -108,7 +109,7 @@ class enemy(object): #new class for enemies
             #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
     def hit(self): #what happens when enemy is hit
-        print('Hit!')
+        self.hitcount += 1
         pass
 
     def move(self):
@@ -137,6 +138,9 @@ def redrawGameWindow():
     for bullet in bullets:
         bullet.draw(win) #drawing the bullets
 
+    randNumLabel = myFont.render("Hits: "+ str(goblin.hitcount), 1, (255, 255, 255)) #prints hitcount
+    win.blit(randNumLabel, (450, 100)) #draws scoreboard
+
     pygame.display.update() #updates the screen
 
 
@@ -150,6 +154,7 @@ bullets = [] #list for containing bullets
 
 shootLoop = 0 #bullet cooldown timer variable.
 
+myFont = pygame.font.SysFont("Arial", 30) #declares font
 
 
 run = True
@@ -179,6 +184,8 @@ while run:
 
                     goblin.hit()
                     bullets.pop( bullets.index( bullet )) #removing the bullet after it has hit the goblin
+
+
 
 
         if bullet.x < ScreenWidth and bullet.x > 0: #ensure bullet is confined within bounds
