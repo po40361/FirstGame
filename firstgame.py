@@ -1,8 +1,8 @@
 import pygame
 pygame.init()
 
-ScreenWidth = 500
-ScreenHeight = 480
+ScreenWidth = 1000
+ScreenHeight = 500
 
 win = pygame.display.set_mode((ScreenWidth, ScreenHeight))
 	#creates a surface
@@ -14,7 +14,7 @@ walkRight = [pygame.image.load('R1.png'), pygame.image.load('R2.png'), pygame.im
 
 walkLeft = [pygame.image.load('L1.png'), pygame.image.load('L2.png'), pygame.image.load('L3.png'), pygame.image.load('L4.png'), pygame.image.load('L5.png'), pygame.image.load('L6.png'), pygame.image.load('L7.png'), pygame.image.load('L8.png'), pygame.image.load('L9.png')]
 
-bg = pygame.image.load('bg.jpg')
+bg = pygame.image.load('bg2.jpg')
 
 char = pygame.image.load('standing.png')
 
@@ -56,7 +56,7 @@ class player(object):
                 win.blit(walkLeft[0], (self.x, self.y))
 
         self.hitbox = (self.x + 20, self.y + 13, 26, 50) #updates hitbox coords
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
+        #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
 
 class projectile(object): #new class for projectiles
@@ -98,14 +98,14 @@ class enemy(object): #new class for enemies
             self.walkCount += 1 #changing the index for images
 
             self.hitbox = (self.x + 15, self.y , 26, 58) #updates hitbox coords
-            pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
+            #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
         else:
             win.blit(self.walkLeft[self.walkCount // 3], (self.x, self.y))
             self.walkCount += 1
 
             self.hitbox = (self.x + 28, self.y , 26, 58) #updates hitbox coords
-            pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
+            #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
     def hit(self): #what happens when enemy is hit
         print('Hit!')
@@ -181,7 +181,7 @@ while run:
                     bullets.pop( bullets.index( bullet )) #removing the bullet after it has hit the goblin
 
 
-        if bullet.x < 500 and bullet.x > 0: #ensure bullet is confined within bounds
+        if bullet.x < ScreenWidth and bullet.x > 0: #ensure bullet is confined within bounds
             bullet.x += bullet.vel  #moving bullet
 
         else:
@@ -200,7 +200,7 @@ while run:
     #limits number of projectiles at a time to the set number
         if len(bullets) < 100:
 
-            bullets.append(projectile( round(man.x + man.width//2), round(man.y + man.height//2), 6, (0, 0, 0), facing))
+            bullets.append(projectile( round(man.x + man.width//2), round(man.y + man.height//2), 6, (255, 255, 255), facing))
 
         shootLoop = 1
 
