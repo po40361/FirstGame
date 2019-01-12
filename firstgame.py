@@ -49,11 +49,11 @@ class player(object):
 
 
         if not(self.standing):
-            if man.left:
+            if self.left:
                 win.blit(walkLeft[self.walkCount // 6], (self.x, self.y)) #uses above list 'walkleft', which is a list of images. prints the image at index walkcount//3
                 self.walkCount += 1
 
-            elif man.right:
+            elif self.right:
                 win.blit(walkRight[self.walkCount // 6], (self.x, self.y)) #same as above but for walking right
                 self.walkCount += 1
 
