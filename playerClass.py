@@ -1,9 +1,8 @@
 import pygame
 
-walkRight = [pygame.image.load('R1.png'), pygame.image.load('R2.png'), pygame.image.load('R3.png'), pygame.image.load('R4.png'), pygame.image.load('R5.png'), pygame.image.load('R6.png'), pygame.image.load('R7.png'), pygame.image.load('R8.png'), pygame.image.load('R9.png')]
+walkRight = [pygame.image.load('sprites/R1.png'), pygame.image.load('sprites/R2.png'), pygame.image.load('sprites/R3.png'), pygame.image.load('sprites/R4.png'), pygame.image.load('sprites/R5.png'), pygame.image.load('sprites/R6.png'), pygame.image.load('sprites/R7.png'), pygame.image.load('sprites/R8.png'), pygame.image.load('sprites/R9.png')]
 
-walkLeft = [pygame.image.load('L1.png'), pygame.image.load('L2.png'), pygame.image.load('L3.png'), pygame.image.load('L4.png'), pygame.image.load('L5.png'), pygame.image.load('L6.png'), pygame.image.load('L7.png'), pygame.image.load('L8.png'), pygame.image.load('L9.png')]
-
+walkLeft = [pygame.image.load('sprites/L1.png'), pygame.image.load('sprites/L2.png'), pygame.image.load('sprites/L3.png'), pygame.image.load('sprites/L4.png'), pygame.image.load('sprites/L5.png'), pygame.image.load('sprites/L6.png'), pygame.image.load('sprites/L7.png'), pygame.image.load('sprites/L8.png'), pygame.image.load('sprites/L9.png')]
 
 class player(object):
     def __init__(self, x, y, width, height):
@@ -28,11 +27,11 @@ class player(object):
 
 
         if not(self.standing):
-            if man.left:
+            if self.left:
                 win.blit(walkLeft[self.walkCount // 6], (self.x, self.y)) #uses above list 'walkleft', which is a list of images. prints the image at index walkcount//3
                 self.walkCount += 1
 
-            elif man.right:
+            elif self.right:
                 win.blit(walkRight[self.walkCount // 6], (self.x, self.y)) #same as above but for walking right
                 self.walkCount += 1
 
@@ -45,10 +44,10 @@ class player(object):
         self.hitbox = (self.x + 20, self.y + 13, 26, 50) #updates hitbox coords
 
         if self.health > 0:
-            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 53 , 10))
-            pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0]-13, self.hitbox[1] - 20, 53 - ((53/9) * (9 - self.health)), 10))
+            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 47, 10))
+            pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0]-13, self.hitbox[1] - 20, 50 - ((50/9) * (9 - self.health)), 10))
         else:
-            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 53 , 10))
+            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 47 , 10))
 
         #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
