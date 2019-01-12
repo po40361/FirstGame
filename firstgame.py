@@ -64,10 +64,6 @@ goblin = enemyClass.enemy(100, 415, 64, 64, 100, 0) #creating enemy instance 'go
 
 bullets = [] #list for containing bullets
 
-#shootLoop = 0 #bullet cooldown timer variable.
-
-#hitLoop = 0 #goblin hit cooldown
-
 myFont = pygame.font.SysFont("Arial", 20, True) #declares font
 
 shootLoop = timer(5) #declaring shootloop (must be outside of main loop)
