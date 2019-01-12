@@ -33,7 +33,8 @@ class enemy(object): #new class for enemies
         self.targetX = targetX #x coord of enemy's target
         self.targetY = targetY # y coord
         self.attack = False
-        self.hitting = True
+        self.hitting = False
+        #self.hitlanded = False
 
 
 
@@ -43,17 +44,15 @@ class enemy(object): #new class for enemies
 
 
         if self.visible:
+
             if self.walkCount + 1 >= 24:
                 self.walkCount = 0
             if self.hitcount + 1 >= 9:
                 self.hitcount = 0
 
-            if not self.hitting:
+            if self.hitting == False:
                 if self.vel > 0:
-                    #if self.attack == True:
-                        #win.blit(self.hitRight[self.walkCount // 3], (self.x, self.y))
 
-                    #else:
                     win.blit(self.walkRight[self.walkCount // 3], (self.x, self.y))
                     self.walkCount += 1 #changing the index for images
 
@@ -61,10 +60,7 @@ class enemy(object): #new class for enemies
                     #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
 
                 elif self.vel < 0:
-                    #if self.attack == True:
-                        #win.blit(self.hitLeft[self.walkCount // 3], (self.x, self.y))
 
-                    #else:
                     win.blit(self.walkLeft[self.walkCount // 3], (self.x, self.y))
                     self.walkCount += 1
 
@@ -72,7 +68,7 @@ class enemy(object): #new class for enemies
                     #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
             else:
                 if self.vel > 0:
-                    #win.blit(self.standRight[0], (self.x, self.y))
+
                     win.blit(self.hitRight[self.hitcount // 3], (self.x, self.y))
                     self.hitcount += 1
                 else:
@@ -99,51 +95,37 @@ class enemy(object): #new class for enemies
 
     def move(self):
 
-        #making mobs move on a set path
-        '''
-        if self.vel > 0:
-            if self.x + self.vel < self.path[1]: #checking if enemy is approaching end of its path
-                self.x += self.vel #moving enemy to the right
+        if self.visible:
 
-            else:
-                self.vel = self.vel * -1 #changes direction
-                self.walkCount = 0 #resets enemy walk animation
+            if (self.targetX - self.x) > 32: #checking if enemy is on the right or left of the player
+                                             # and if they're far away enough to walk towards them
+                self.hitting = False
 
-        else: #same as above but for opposite direction
-            if self.x - self.vel > self.path[0]:
-                self.x += self.vel
-            else:
-                self.vel = self.vel * -1
-                self.walkCount = 0
-        '''
+                if self.vel > 0:
+                    self.x += self.vel #moving enemy to the right
+                else:
+                    self.vel = self.vel * (-1)
+                    self.walkCount = 0 #resets enemy walk animation
 
-        #self.attack = False
+            elif (self.x - self.targetX ) > 20:
+                self.hitting = False
 
-        '''if not \
-                ((self.hitbox[0] - self.targetX) <= 1 or (self.hitbox[0] - self.targetX) >=-1) \
-                and ((self.hitbox[1] - self.targetY) <= 10 or (self.hitbox[1] - self.targetY) >= -10):
-                #checking if player is close enough for enemy to attack'''
+                if self.vel < 0:
+                    self.x += self.vel
+                else:
+                    self.vel = self.vel * (-1)
+                    self.walkCount = 0
 
-        if (self.targetX - self.x) > 32: #checking if enemy is on the right or left of the player
-                                         # and if they're far away enough to walk towards them
-            self.hitting = False
+            elif ((self.targetX - self.x) <= 32 and self.vel > 0) or ((self.x - self.targetX) <= 20 and self.vel < 0):
+                #if player is within a certain nbr of pixels to the enemy's hitbox, enemy stops walking and attacks
 
-            if self.vel > 0:
-                self.x += self.vel #moving enemy to the right
-            else:
-                self.vel = self.vel * (-1)
-                self.walkCount = 0 #resets enemy walk animation
+                #if (self.targetY) < self.hitbox[1] + self.hitbox[3] and ammopack.y + (ammopack.width/2) > man.hitbox[1]):
 
-        elif (self.x - self.targetX ) > 20:
-            self.hitting = False
+                    #if (ammopack.x + (ammopack.width/2) > man.hitbox[0]
+                        #and ammopack.x - (ammopack.width/2) < man.hitbox[2] + man.hitbox[0]):
 
-            if self.vel < 0:
-                self.x += self.vel
-            else:
-                self.vel = self.vel * (-1)
+                self.hitting = True
                 self.walkCount = 0
 
-        elif ((self.targetX - self.x) < 32 or (self.x - self.targetX) < 20):
-            #if player is within a certain nbr of pixels to the enemy's hitbox, enemy stops walking and attacks
-            self.hitting = True
-            self.walkCount = 0
+            #elif ((self.x - self.targetX) < 20 and self.vel < 0):
+

@@ -2,6 +2,8 @@ import pygame
 import playerClass
 import enemyClass
 import bulletClass
+import powerupClass
+import random
 
 
 pygame.init()
@@ -23,6 +25,8 @@ char = pygame.image.load('sprites/standing.png')
 
 clock = pygame.time.Clock() #allows for toggling fps
 
+global gameStatus
+gameStatus = True #true = game is still ongoing. False = gameover
 
 class timer(object):
 
@@ -36,20 +40,50 @@ class timer(object):
         if self.counter > self.duration:
             self.counter = 0
 
+    def update(self, newDuration):
+        self.duration = newDuration
+
 
 def redrawGameWindow():
     win.blit( bg, (0, 0)) #blits the image of 'bg'
-    man.draw(win) #calling the function above
-    goblin.draw(win)
-    for bullet in bullets:
-        bullet.draw(win) #drawing the bullets
+    global gameStatus
 
-    randNumLabel = myFont.render("Score: "+ str(score), 1, (0, 0, 0)) #prints score
-    win.blit(randNumLabel, (400, 10)) #draws scoreboard
+
+    if gameStatus:
+        man.draw(win) #calling the function above
+        goblin.draw(win)
+        for bullet in bullets:
+            bullet.draw(win) #drawing the bullets
+
+        ammoDisplay = myFont.render("Ammo: " + str(man.ammo), 1,(165, 42, 42))
+        win.blit(ammoDisplay, (400, 35)) #draws and displays ammo
+
+        scoreBoard = myFont.render("Score: "+ str(score), 1, (0, 0, 0)) #prints score
+        win.blit(scoreBoard, (400, 10)) #draws scoreboard
+
+        for ammopack in ammopacks:
+            ammopack.draw(win)
+
+        for healthpack in healthpacks:
+            healthpack.draw(win)
+
 
     gameOverMsg = myFont.render("GAME OVER!", 1, (0, 0, 0))
-    if man.health <= 0:
+    scoreBoard = myFont.render("Score: "+ str(score), 1, (0, 0, 0))
+    if man.health <= 0: #displaying game over when player dies
+        gameStatus = False
         win.blit(gameOverMsg, (190, 200))
+        win.blit(scoreBoard, (210, 250))
+        man.ammo = 0
+
+    winMsg = myFont.render("You Win!", 1, (0, 0, 0))
+    if goblin.visible == False: #displaying "you win" when player kills goblin
+        gameStatus = False
+        win.blit(winMsg, (203, 200))
+        win.blit(scoreBoard, (200, 240))
+        man.ammo = 0
+
+
 
 
     pygame.display.update() #updates the screen
@@ -59,8 +93,13 @@ def redrawGameWindow():
 
 man = playerClass.player(300, 410, 64, 64) #creating player instance 'man', which is a type of player
 
+#healthpack = powerupClass.powerup(random.randint(10, 490), (252, 5, 71))
+#ammopack = powerupClass.powerup(random.randint(10, 490), (252, 5, 71))
 
 goblin = enemyClass.enemy(100, 415, 64, 64, 100, 0) #creating enemy instance 'goblin'
+
+ammopacks = []
+healthpacks = []
 
 bullets = [] #list for containing bullets
 
@@ -68,6 +107,12 @@ myFont = pygame.font.SysFont("Arial", 20, True) #declares font
 
 shootLoop = timer(5) #declaring shootloop (must be outside of main loop)
 hitLoop = timer(8)
+
+ammopackTimerDuration = random.randint(50, 100)
+ammopackLoop = timer(ammopackTimerDuration)
+
+healthpackTimerDuration = random.randint(50, 100)
+healthpackLoop = timer(healthpackTimerDuration)
 
 run = True
 while run:
@@ -79,6 +124,8 @@ while run:
 
     shootLoop.loop()
     hitLoop.loop()
+    ammopackLoop.loop()
+    healthpackLoop.loop()
 
     for event in pygame.event.get(): #quiting the game when you press 'x' on the window
         if event.type == pygame.QUIT:
@@ -86,6 +133,58 @@ while run:
 
     goblin.targetX = man.x
     goblin.targetY = man.y
+
+    #print(ammopackLoop.counter)
+    '''ammopack mechanics'''
+    if len(ammopacks) == 0:
+        ammopackTimerDuration = random.randint(50, 100)
+        ammopackLoop.update(ammopackTimerDuration) #updates the timer duration
+
+        if ammopackLoop.counter == 0:
+            ammopacks.append(powerupClass.powerup(random.randint(10, 490), (11, 72, 132))) #adding ammopacks to list of ammopacks
+            #print(ammopacks)
+            #print(ammopackLoop.duration)
+
+    for ammopack in ammopacks:
+        if (ammopack.y - (ammopack.width/2) < man.hitbox[1] + man.hitbox[3]
+            and ammopack.y + (ammopack.width/2) > man.hitbox[1]):
+
+            if (ammopack.x + (ammopack.width/2) > man.hitbox[0]
+                and ammopack.x - (ammopack.width/2) < man.hitbox[2] + man.hitbox[0]):
+
+                ammopacks.pop( ammopacks.index(ammopack))#removing ammopack after it collides with player
+                ammopackLoop.counter = 1
+                man.ammo += 2
+                #print(ammopacks)
+                if man.ammo + 2 >= 10:
+                    man.ammo = 10
+                else:
+                    man.ammo += 2
+
+
+
+
+    '''healthpack mechanics'''
+    if len(healthpacks) == 0:
+        healthpackTimerDuration = random.randint(50, 100)
+        healthpackLoop.update(healthpackTimerDuration) #updates the timer duration
+
+        if healthpackLoop.counter == 0:
+            healthpacks.append(powerupClass.powerup(random.randint(10, 490), (196, 17, 109))) #adding healthpack to list of healthpacks
+            #print(ammopacks)
+            #print(healthpackLoop.duration)
+
+    for healthpack in healthpacks:
+        if (healthpack.y - (healthpack.width/2) < man.hitbox[1] + man.hitbox[3] and healthpack.y + (healthpack.width/2) > man.hitbox[1]):
+
+            if (healthpack.x + (healthpack.width/2) > man.hitbox[0]and healthpack.x - (healthpack.width/2) < man.hitbox[2] + man.hitbox[0]):
+
+                healthpacks.pop( healthpacks.index(healthpack))#removing healthpack after it collides with player
+                healthpackLoop.counter = 1
+                if man.health + 3 >= 10:
+                    man.health = 10
+                else:
+                    man.health += 3
 
     '''Bullet mechanics'''
     for bullet in bullets:
@@ -110,7 +209,7 @@ while run:
             bullets.pop( bullets.index( bullet ) ) #making the bullet disappear when it hits the edge of the screen
 
     '''player taking damage'''
-    if man.isJump == False and goblin.hitting == True and hitLoop.counter == 0:
+    if man.isJump == False and goblin.hitting == True and hitLoop.counter == 0 and goblin.visible:
         man.hit()
         hitLoop.counter = 1
 
@@ -119,15 +218,16 @@ while run:
     keys = pygame.key.get_pressed() #what happens when you press each key
 
     if keys[pygame.K_SPACE] and shootLoop.counter == 0: # only allows bullet to shoot when shootLoop = 0. Basic timer.
-        if man.left:
-            facing = -1     #variable 'facing' is used in projectile class to determine direction of bullet
+        if man.right:
+            facing = 1     #variable 'facing' is used in projectile class to determine direction of bullet
         else:
-            facing = 1
+            facing = -1
 
     #limits number of projectiles at a time to the set number
-        if len(bullets) < 100:
+        if len(bullets) < 100 and man.ammo > 0:
 
             bullets.append(bulletClass.projectile( round(man.x + man.width//2), round(man.y + man.height//2), 6, (0, 0, 0), facing))
+            man.ammo -= 1
 
         shootLoop.counter = 1
 

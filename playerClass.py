@@ -20,6 +20,8 @@ class player(object):
         self.standing = True
         self.hitbox = (self.x + 20, self.y + 13, 26, 50) #defines hitbox as a class attribute
         self.health = 9
+        self.ammo = 10
+
 
     def draw(self, win):
         if self.walkCount + 1 >= 54 : #sprite file only has 9 images and we're doing 3 frames per movement. so 27 or else it will have an index error
@@ -44,16 +46,16 @@ class player(object):
         self.hitbox = (self.x + 20, self.y + 13, 26, 50) #updates hitbox coords
 
         if self.health > 0:
-            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 47, 10))
+            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 50, 10))
             pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0]-13, self.hitbox[1] - 20, 50 - ((50/9) * (9 - self.health)), 10))
         else:
             pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-13, self.hitbox[1] - 20, 47 , 10))
 
-        #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2) #draws hitbox
+        #pygame.draw.rect(win, (0, 0, 0), self.hitbox, 2) #draws hitbox
 
     def hit(self): #what happens when player is hit
 
         if self.health > 0:
-            self.health = self.health - 0.5
+            self.health = self.health - 2
         else:
             self.health = 0
