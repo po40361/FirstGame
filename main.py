@@ -91,10 +91,7 @@ def redrawGameWindow():
 
 #mainloop
 
-man = playerClass.player(300, 410, 64, 64) #creating player instance 'man', which is a type of player
-
-#healthpack = powerupClass.powerup(random.randint(10, 490), (252, 5, 71))
-#ammopack = powerupClass.powerup(random.randint(10, 490), (252, 5, 71))
+man = playerClass.player(150, 410, 64, 64) #creating player instance 'man', which is a type of player
 
 goblin = enemyClass.enemy(100, 415, 64, 64, 100, 0) #creating enemy instance 'goblin'
 
@@ -108,11 +105,14 @@ myFont = pygame.font.SysFont("Arial", 20, True) #declares font
 shootLoop = timer(5) #declaring shootloop (must be outside of main loop)
 hitLoop = timer(8)
 
-ammopackTimerDuration = random.randint(50, 100)
+ammopackTimerDuration = random.randint(100, 300)
 ammopackLoop = timer(ammopackTimerDuration)
 
-healthpackTimerDuration = random.randint(50, 100)
+healthpackTimerDuration = random.randint(150, 300)
 healthpackLoop = timer(healthpackTimerDuration)
+
+goblinHealthRegenLoop = timer(5)
+
 
 run = True
 while run:
@@ -122,10 +122,12 @@ while run:
 
     clock.tick(54) #sets fps to 27
 
+    '''timers'''
     shootLoop.loop()
     hitLoop.loop()
     ammopackLoop.loop()
     healthpackLoop.loop()
+    goblinHealthRegenLoop.loop()
 
     for event in pygame.event.get(): #quiting the game when you press 'x' on the window
         if event.type == pygame.QUIT:
@@ -134,10 +136,23 @@ while run:
     goblin.targetX = man.x
     goblin.targetY = man.y
 
+
+    '''Goblin health regen'''
+    loopControl = bool
+
+
+    if goblin.health < goblin.fullHealth and goblinHealthRegenLoop.counter == 0:
+        goblinHealthRegenLoop.counter = 1
+
+
+        goblin.health += (1/20)
+        loopControl = True
+
+
     #print(ammopackLoop.counter)
     '''ammopack mechanics'''
     if len(ammopacks) == 0:
-        ammopackTimerDuration = random.randint(50, 100)
+        ammopackTimerDuration = random.randint(50, 300)
         ammopackLoop.update(ammopackTimerDuration) #updates the timer duration
 
         if ammopackLoop.counter == 0:
@@ -154,7 +169,7 @@ while run:
 
                 ammopacks.pop( ammopacks.index(ammopack))#removing ammopack after it collides with player
                 ammopackLoop.counter = 1
-                man.ammo += 2
+
                 #print(ammopacks)
                 if man.ammo + 2 >= 10:
                     man.ammo = 10
@@ -166,7 +181,7 @@ while run:
 
     '''healthpack mechanics'''
     if len(healthpacks) == 0:
-        healthpackTimerDuration = random.randint(50, 100)
+        healthpackTimerDuration = random.randint(50, 300)
         healthpackLoop.update(healthpackTimerDuration) #updates the timer duration
 
         if healthpackLoop.counter == 0:

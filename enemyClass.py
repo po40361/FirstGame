@@ -28,6 +28,7 @@ class enemy(object): #new class for enemies
         self.vel = 3
         self.hitbox = (self.x + 15, self.y, 26, 60) #the hitbox's attributes
         self.hitcount = 0  #same as walkcount but for the hitting sprite
+        self.fullHealth = 9
         self.health = 9
         self.visible = True #is the enemy visible
         self.targetX = targetX #x coord of enemy's target
