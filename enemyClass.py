@@ -77,9 +77,12 @@ class enemy(object): #new class for enemies
                     self.hitcount += 1
 
 
+            if self.health > 0:
+                pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-10, self.hitbox[1] - 20, 50 , 10))
+                pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0]-10, self.hitbox[1] - 20, 50 - ((50/9) * (9 - self.health)), 10))#red part of healthbar
 
-            pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-10, self.hitbox[1] - 20, 50 , 10))
-            pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0]-10, self.hitbox[1] - 20, 50 - ((50/9) * (9 - self.health)), 10))#red part of healthbar
+            else:
+                pygame.draw.rect(win, (169,169,169), (self.hitbox[0]-10, self.hitbox[1] - 20, 50 , 10))
             #pygame.draw.rect(win, (0, 255, 0), (self.hitbox[0], self.hitbox[1] - 20, 50, 10))#green part of healthbar
 
 
@@ -89,6 +92,7 @@ class enemy(object): #new class for enemies
             self.health = self.health - 1
         else:
             self.visible = False
+
 
         global score
         score += 1

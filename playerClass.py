@@ -20,7 +20,7 @@ class player(object):
         self.standing = True
         self.hitbox = (self.x + 20, self.y + 13, 26, 50) #defines hitbox as a class attribute
         self.health = 9
-        self.ammo = 0
+        self.ammo = 3
 
 
     def draw(self, win):

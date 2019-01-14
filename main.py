@@ -77,8 +77,9 @@ def redrawGameWindow():
         man.ammo = 0
 
     winMsg = myFont.render("You Win!", 1, (0, 0, 0))
-    if goblin.visible == False: #displaying "you win" when player kills goblin
+    if goblin.health <0: #displaying "you win" when player kills goblin
         gameStatus = False
+        goblin.visible = False
         win.blit(winMsg, (203, 200))
         win.blit(scoreBoard, (200, 240))
         man.ammo = 0
@@ -91,7 +92,8 @@ def redrawGameWindow():
 
 #mainloop
 
-man = playerClass.player(150, 410, 64, 64) #creating player instance 'man', which is a type of player
+
+man = playerClass.player(300, 410, 64, 64) #creating player instance 'man', which is a type of player
 
 goblin = enemyClass.enemy(100, 415, 64, 64, 100, 0) #creating enemy instance 'goblin'
 
@@ -156,7 +158,7 @@ while run:
         ammopackLoop.update(ammopackTimerDuration) #updates the timer duration
 
         if ammopackLoop.counter == 0:
-            ammopacks.append(powerupClass.powerup(random.randint(10, 490), (11, 72, 132))) #adding ammopacks to list of ammopacks
+            ammopacks.append(powerupClass.powerup(random.randint(10, 490),10, (11, 72, 132))) #adding ammopacks to list of ammopacks
             #print(ammopacks)
             #print(ammopackLoop.duration)
 
@@ -177,6 +179,11 @@ while run:
                     man.ammo += 2
 
 
+        if ammopack.y >= 10 and ammopack.y <435:
+            ammopack.y += 2.5
+
+
+
 
 
     '''healthpack mechanics'''
@@ -185,7 +192,7 @@ while run:
         healthpackLoop.update(healthpackTimerDuration) #updates the timer duration
 
         if healthpackLoop.counter == 0:
-            healthpacks.append(powerupClass.powerup(random.randint(10, 490), (196, 17, 109))) #adding healthpack to list of healthpacks
+            healthpacks.append(powerupClass.powerup(random.randint(10, 490), 10, (196, 17, 109))) #adding healthpack to list of healthpacks
             #print(ammopacks)
             #print(healthpackLoop.duration)
 
@@ -200,6 +207,9 @@ while run:
                     man.health = 10
                 else:
                     man.health += 3
+
+        if healthpack.y >= 10 and healthpack.y <435:
+            healthpack.y += 2.5
 
     '''Bullet mechanics'''
     for bullet in bullets:
